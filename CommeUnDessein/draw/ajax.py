@@ -202,11 +202,17 @@ def unix_time_millis(dt):
 planetWidth = 180
 planetHeight = 90
 
+def getCitySizePixel(city):
+	width = city.width * city.pixelPerMm if hasattr(city, 'pixelPerMm') else city.width
+	height = city.height * city.pixelPerMm if hasattr(city, 'pixelPerMm') else city.height
+	return { 'width': width, 'height': height }
+
 def projectToGeoJSON(city, bounds):
-	x = planetWidth * bounds['x'] / float(city.width * city.pixelPerMm)
-	y = planetHeight * bounds['y'] / float(city.height * city.pixelPerMm)
-	width = planetWidth * bounds['width'] / float(city.width * city.pixelPerMm)
-	height = planetHeight * bounds['height'] / float(city.height * city.pixelPerMm)
+	citySize = getCitySizePixel(city)
+	x = planetWidth * bounds['x'] / float(citySize['width'])
+	y = planetHeight * bounds['y'] / float(citySize['height'])
+	width = planetWidth * bounds['width'] / float(citySize['width'])
+	height = planetHeight * bounds['height'] / float(citySize['height'])
 	x = min(max(x, -planetWidth/2), planetWidth/2)
 	y = min(max(y, -planetHeight/2), planetHeight/2)
 	if x + width > planetWidth/2:
@@ -216,10 +222,11 @@ def projectToGeoJSON(city, bounds):
 	return { 'x': x, 'y': y, 'width': width, 'height': height }
 
 def geoJSONToProject(city, bounds):
-	x = float(city.width * city.pixelPerMm) * bounds['x'] / planetWidth
-	y = float(city.height * city.pixelPerMm) * bounds['y'] / planetHeight
-	width = float(city.width * city.pixelPerMm) * bounds['width'] / planetWidth
-	height = float(city.height * city.pixelPerMm) * bounds['height'] / planetHeight
+	citySize = getCitySizePixel(city)
+	x = float(citySize['width']) * bounds['x'] / planetWidth
+	y = float(citySize['height']) * bounds['y'] / planetHeight
+	width = float(citySize['width']) * bounds['width'] / planetWidth
+	height = float(citySize['height']) * bounds['height'] / planetHeight
 	return { 'x': x, 'y': y, 'width': width, 'height': height }
 
 def makeBox(left, top, right, bottom):
@@ -364,7 +371,7 @@ def setCityNextEventDateAndLocation(request, cityName, date, location):
 	city.save()
 	return json.dumps({"message": "success"})
 
-def setCityDimensions(request, cityName, width, height, strokeWidth):
+def setCityDimensions(request, cityName, width, height, strokeWidth, pixelPerMm=None):
 	if not isAdmin(request.user):
 		return json.dumps({"status": "error", "message": "not_admin"})
 
@@ -375,6 +382,8 @@ def setCityDimensions(request, cityName, width, height, strokeWidth):
 	city.width = width
 	city.height = height
 	city.strokeWidth = strokeWidth
+	if pixelPerMm is not None:
+		city.strokeWidth = pixelPerMm
 	city.save()
 	return json.dumps({"message": "success"})
 
@@ -938,7 +947,8 @@ def loadDrawingsAndTilesFromBounds(request, bounds, cityName=None, drawingsToIgn
 	if rejected:
 		statusToLoad.append('rejected')
 
-	if bounds['x'] >= city.width  * city.pixelPerMm / 2 or bounds['y'] >= city.height * city.pixelPerMm / 2 or city.width * city.pixelPerMm <= 0 or city.height * city.pixelPerMm <= 0 or boundsHasNone(bounds):
+	citySize = getCitySizePixel(city)
+	if bounds['x'] >= citySize['width'] / 2 or bounds['y'] >= citySize['height'] / 2 or citySize['width'] <= 0 or citySize['height'] <= 0:
 	 	return json.dumps( { 'tiles': [], 'items': [], 'user': request.user.username } )
 
 	box = makeBoxFromBounds(city, bounds)
