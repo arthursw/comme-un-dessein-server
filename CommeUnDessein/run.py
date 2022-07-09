@@ -22,7 +22,7 @@ import django.core.handlers.wsgi
 
 
 dir = os.path.dirname(__file__)
-sys.path.insert(0, os.path.join(dir, 'Wetu'))
+sys.path.insert(0, os.path.join(dir, 'CommeUnDessein'))
 
 try:
     import settings
@@ -31,7 +31,7 @@ except ImportError:
     sys.exit(1)
 
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Wetu.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "CommeUnDessein.settings")
 
 import django
 django.setup()

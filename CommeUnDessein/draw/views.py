@@ -17,7 +17,7 @@ from math import floor
 from django.views.decorators.csrf import csrf_exempt
 from models import *
 
-from Wetu import settings
+from CommeUnDessein import settings
 
 # from django.http import JsonResponse
 import json
@@ -38,6 +38,9 @@ def addCityToResult(result, city):
 	result['cityPixelPerMm'] = city.pixelPerMm
 	result['cityUseSVG'] = city.useSVG
 	result['cityMode'] = city.mode or 'CommeUnDessein'
+	result['cityTileWidth'] = city.tileWidth
+	result['cityTileHeight'] = city.tileHeight
+	result['nTilesMax'] = city.nTilesMax
 	return
 
 def index(request, site=None, owner=None, cityName=None, x=0, y=0, useDebugFiles=False, drawingMode=None, visit=False, pk=None, tilePk=None):
@@ -124,7 +127,7 @@ def index(request, site=None, owner=None, cityName=None, x=0, y=0, useDebugFiles
 		except:
 			print('Tile not found')
 	else:
-		result['drawingImageURL'] = 'http://commeundessein.co/static/images/Wetu1200x630.png'
+		result['drawingImageURL'] = 'http://commeundessein.co/static/images/CommeUnDessein1200x630.png'
 		result['drawingTitle'] = 'Comme un Dessein'
 		result['drawingDescription'] = u'Comme un Dessein est un dispositif qui invite les citoyens à composer une œuvre collective et utopique, à l’aide d’une interface web connectée à un traceur vertical.'
 

@@ -7,7 +7,7 @@ from django.contrib.auth import views as django_contrib_auth_views
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.views.generic import RedirectView
 from django.http import HttpResponsePermanentRedirect
-from Wetu import settings
+from CommeUnDessein import settings
 # from dajaxice.core import dajaxice_autodiscover, dajaxice_config
 
 admin.autodiscover()

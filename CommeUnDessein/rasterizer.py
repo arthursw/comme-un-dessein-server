@@ -15,7 +15,7 @@ import threading, time
 from mongoengine import *
 
 dir = os.path.dirname(__file__)
-sys.path.insert(0, os.path.join(dir, 'Wetu'))
+sys.path.insert(0, os.path.join(dir, 'CommeUnDessein'))
 
 
 try:
@@ -26,12 +26,12 @@ except ImportError:
 
 import os
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Wetu.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "CommeUnDessein.settings")
 
 import django
 django.setup()
 
-connect('Wetu')
+connect('CommeUnDessein')
 
 from draw.mongoModels import AreaToUpdate
 

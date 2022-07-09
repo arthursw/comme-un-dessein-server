@@ -1,6 +1,6 @@
-# --- Wetu --- #
+# --- CommeUnDessein --- #
 
-Wetu is a collaborative app.
+CommeUnDessein is a collaborative app.
 
 # development
 
@@ -88,7 +88,7 @@ lib/python2.7/site-packages/socketio/sdjango.py (line 6)
 
 ## Create site
 
-If the site does not exists, you will have the following error: `Site matching query does not exist`
+If the site does not exist, you will have the following error: `Site matching query does not exist`
 
 in python shell:
 

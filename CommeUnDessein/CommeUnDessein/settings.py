@@ -17,14 +17,14 @@ import json
 import datetime
 
 from mongoengine import *
-connect('Wetu')
+connect('CommeUnDessein')
 
 DATA_DIR = '/data'
 
 if not os.path.isdir(DATA_DIR):
     DATA_DIR = os.path.expanduser('~/.root/data')
     
-with open(DATA_DIR + '/wetu/settings.json') as f:
+with open(DATA_DIR + '/comme-un-dessein/settings.json') as f:
     localSettings = json.loads(f.read().strip())
 
 SITE_ID = localSettings['SITE_ID']
@@ -59,7 +59,7 @@ if DEBUG:
     STATICFILES_FINDERS = STATICFILES_FINDERS + ('draw.fileFinder.StaticRootFinder',)
 
 # Make this unique, and don't share it with anybody.
-with open(DATA_DIR + '/wetu/secret_key.txt') as f:
+with open(DATA_DIR + '/comme-un-dessein/secret_key.txt') as f:
     SECRET_KEY = f.read().strip()
 
 # SECRET_KEY = 'A unique secret key'
@@ -104,10 +104,10 @@ MIDDLEWARE_CLASSES = [
 
 CORS_ORIGIN_ALLOW_ALL = localSettings['CORS_ORIGIN_ALLOW_ALL']
 
-ROOT_URLCONF = 'Wetu.urls'
+ROOT_URLCONF = 'CommeUnDessein.urls'
 
 
-WSGI_APPLICATION = 'Wetu.wsgi.application'
+WSGI_APPLICATION = 'CommeUnDessein.wsgi.application'
 
 
 
@@ -117,7 +117,7 @@ WSGI_APPLICATION = 'Wetu.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': os.path.join(PROJECT_DIR, 'wetu.db'),
+        'NAME': os.path.join(PROJECT_DIR, 'comme-un-dessein.db'),
         # The following settings are not used with sqlite3:
         'USER': '',
         'PASSWORD': '',
@@ -257,7 +257,7 @@ ACCOUNT_EMAIL_VERIFICATION = localSettings['ACCOUNT_EMAIL_VERIFICATION'] # "mand
 ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
 ACCOUNT_SIGNUP_PASSWORD_ENTER_TWICE = False
 ACCOUNT_UNIQUE_EMAIL = True 
-ACCOUNT_ADAPTER = 'Wetu.adapter.AccountAdapterCD'
+ACCOUNT_ADAPTER = 'CommeUnDessein.adapter.AccountAdapterCD'
 # ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 
 # Dictionary containing provider specific settings.

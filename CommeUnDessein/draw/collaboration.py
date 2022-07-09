@@ -12,7 +12,7 @@
 # import time
 
 # import base64
-# from Wetu import settings
+# from CommeUnDessein import settings
 
 # # from github import Github
 # from git import Repo

@@ -13,5 +13,11 @@
 	"Vote for this drawing on Comme un Dessein": "Vote for \"{{drawing}}\" by {{author}} on Comme un Dessein !",
 	"The image is too big to fit in one drawing": "The image is too big to fit in one drawing. Click on the image part that you want to trace.",
 	"The image is too big": "The image is too big to be traced automatically. Please reduce its size before tracing it.",
-	"You cannot trace automatically an image from an URL": "You cannot trace automatically an image from an URL. Please make sure the image copyright allows reusing the image, then download the image on your computer and choose the image from your computer."
+	"You cannot trace automatically an image from an URL": "You cannot trace automatically an image from an URL. Please make sure the image copyright allows reusing the image, then download the image on your computer and choose the image from your computer.",
+    "Do you want to paint this tile": "Do you want to paint the tile number {{tileNumber}} ?",
+    "Do you want to reveal this tile": "Do you want to reveal the tile number {{tileNumber}} ?",
+    "You can still reveal n tiles": "You have {{tileNumber}} tiles left to reveal.",
+	"You can still reveal n tiles_plural": "You have {{count}} tiles left to reveal.",
+    "You cannot reveal more than n tiles": "You cannot reveal more than one tile.",
+    "You cannot reveal more than n tiles_plural": "You cannot reveal more than {{count}} tiles."
 }

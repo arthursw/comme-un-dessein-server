@@ -42,7 +42,7 @@ import cStringIO
 import StringIO
 import traceback
 import requests
-from Wetu import settings
+from CommeUnDessein import settings
 from allauth.socialaccount.models import SocialToken
 # import collaboration
 
@@ -159,30 +159,30 @@ def isAdmin(user):
 logger = logging.getLogger(__name__)
 
 try:
-	commeUnDesseinCity = City.objects.get(name='Wetu', owner='WetuOrg', public=True)
+	commeUnDesseinCity = City.objects.get(name='CommeUnDessein', owner='CommeUnDesseinOrg', public=True)
 except City.DoesNotExist:
-	commeUnDesseinCity = City(name='Wetu', owner='WetuOrg', public=True)
+	commeUnDesseinCity = City(name='CommeUnDessein', owner='CommeUnDesseinOrg', public=True)
 	commeUnDesseinCity.save()
 
 
 logger = logging.getLogger(__name__)
 
-with open(settings.DATA_DIR + '/wetu/secret_github.txt') as f:
+with open(settings.DATA_DIR + '/comme-un-dessein/secret_github.txt') as f:
 	PASSWORD = base64.b64decode(f.read().strip())
 
-with open(settings.DATA_DIR + '/wetu/secret_tipibot.txt') as f:
+with open(settings.DATA_DIR + '/comme-un-dessein/secret_tipibot.txt') as f:
 	TIPIBOT_PASSWORD = f.read().strip()
 
-with open(settings.DATA_DIR + '/wetu/client_secret_github.txt') as f:
+with open(settings.DATA_DIR + '/comme-un-dessein/client_secret_github.txt') as f:
 	CLIENT_SECRET = f.read().strip()
 
-with open(settings.DATA_DIR + '/wetu/accesstoken_github.txt') as f:
+with open(settings.DATA_DIR + '/comme-un-dessein/accesstoken_github.txt') as f:
 	ACCESS_TOKEN = f.read().strip()
 
-with open(settings.DATA_DIR + '/wetu/openaccesstoken_github.txt') as f:
+with open(settings.DATA_DIR + '/comme-un-dessein/openaccesstoken_github.txt') as f:
 	OPEN_ACCESS_TOKEN = f.read().strip()
 
-with open(settings.DATA_DIR + '/wetu/settings.json') as f:
+with open(settings.DATA_DIR + '/comme-un-dessein/settings.json') as f:
     localSettings = json.loads(f.read().strip())
 
 # pprint(vars(object))
@@ -203,10 +203,10 @@ planetWidth = 180
 planetHeight = 90
 
 def projectToGeoJSON(city, bounds):
-	x = planetWidth * bounds['x'] / float(city.width)
-	y = planetHeight * bounds['y'] / float(city.height)
-	width = planetWidth * bounds['width'] / float(city.width)
-	height = planetHeight * bounds['height'] / float(city.height)
+	x = planetWidth * bounds['x'] / float(city.width * city.pixelPerMm)
+	y = planetHeight * bounds['y'] / float(city.height * city.pixelPerMm)
+	width = planetWidth * bounds['width'] / float(city.width * city.pixelPerMm)
+	height = planetHeight * bounds['height'] / float(city.height * city.pixelPerMm)
 	x = min(max(x, -planetWidth/2), planetWidth/2)
 	y = min(max(y, -planetHeight/2), planetHeight/2)
 	if x + width > planetWidth/2:
@@ -216,10 +216,10 @@ def projectToGeoJSON(city, bounds):
 	return { 'x': x, 'y': y, 'width': width, 'height': height }
 
 def geoJSONToProject(city, bounds):
-	x = float(city.width) * bounds['x'] / planetWidth
-	y = float(city.height) * bounds['y'] / planetHeight
-	width = float(city.width) * bounds['width'] / planetWidth
-	height = float(city.height) * bounds['height'] / planetHeight
+	x = float(city.width * city.pixelPerMm) * bounds['x'] / planetWidth
+	y = float(city.height * city.pixelPerMm) * bounds['y'] / planetHeight
+	width = float(city.width * city.pixelPerMm) * bounds['width'] / planetWidth
+	height = float(city.height * city.pixelPerMm) * bounds['height'] / planetHeight
 	return { 'x': x, 'y': y, 'width': width, 'height': height }
 
 def makeBox(left, top, right, bottom):
@@ -227,6 +227,9 @@ def makeBox(left, top, right, bottom):
 
 def makeBoxCCW(left, top, right, bottom):
 	return { "type": "Polygon", "coordinates": [ [ [left, bottom], [right, bottom], [right, top], [left, top], [left, bottom] ] ] }
+
+def boundsHasNone(bounds):
+	return bounds['x'] is None or bounds['y'] is None or bounds['width'] is None or bounds['height'] is None
 
 def makeBoxFromBounds(city, bounds):
 	bounds = projectToGeoJSON(city, bounds)
@@ -384,7 +387,7 @@ def changeUser(request, username):
 	try:
 		userProfile = UserProfile.objects.get(username=request.user.username)
 	except UserProfile.DoesNotExist:
-		return json.dumps({"status": "error", "message": "The user does not exists."})
+		return json.dumps({"status": "error", "message": "The user does not exist."})
 
 	if userProfile.banned:
 		return json.dumps({'state': 'error', 'message': 'Your account has been suspended'})
@@ -445,7 +448,7 @@ def changeUserEmailFrequency(request, emailFrequency):
 	try:
 		userProfile = UserProfile.objects.get(username=request.user.username)
 	except UserProfile.DoesNotExist:
-		return json.dumps({"status": "error", "message": "The user does not exists."})
+		return json.dumps({"status": "error", "message": "The user does not exist."})
 
 	userProfile.emailFrequency = emailFrequency
 	userProfile.save()
@@ -461,7 +464,7 @@ def deleteUser(request):
 	try:
 		userProfile = UserProfile.objects.get(username=request.user.username)
 	except UserProfile.DoesNotExist:
-		return json.dumps({"status": "error", "message": "The user does not exists."})
+		return json.dumps({"status": "error", "message": "The user does not exist."})
 
 	anonymous_name = 'anonymous_' + str(random.random())
 
@@ -505,7 +508,7 @@ def deleteUserDrawings(request, username):
 	try:
 		userProfile = UserProfile.objects.get(username=request.user.username)
 	except UserProfile.DoesNotExist:
-		return json.dumps({"status": "error", "message": "The user does not exists."})
+		return json.dumps({"status": "error", "message": "The user does not exist."})
 
 	drawings = Drawing.objects(owner=username)
 	
@@ -564,7 +567,7 @@ def on_email_confirmed(sender, email_address, request, **kwargs):
 				pass
 
 	for drawing in drawings:
-		cityName = 'Wetu'
+		cityName = 'CommeUnDessein'
 		try:
 			city = City.objects.get(pk=drawing.city)
 			cityName = city.name
@@ -817,79 +820,6 @@ def getCity(cityName=None):
 			return None
 	return city
 
-# def checkAddItem(item, items, itemsDates=None, ignoreDrafts=False):
-# 	if not item.pk in items:
-# 		if ignoreDrafts:
-# 			itemIsDraft = type(item) is Path and item.isDraft
-# 			if not itemIsDraft:
-# 				items[item.pk] = item.to_json()
-# 		else:
-# 			items[item.pk] = item.to_json()
-# 	return
-
-# def checkAddItemRasterizer(item, items, itemsDates, ignoreDrafts=False):
-# 	pk = item.pk
-# 	itemLastUpdate = unix_time_millis(item.lastUpdate)
-# 	if not pk in items and (not pk in itemsDates or itemsDates[pk]<itemLastUpdate):
-# 		items[pk] = item.to_json()
-# 		if pk in itemsDates:
-# 			del itemsDates[pk]
-# 	return
-
-# def getItems(models, areasToLoad, qZoom, city, checkAddItemFunction, itemDates=None, owner=None, loadDrafts=True):
-# 	items = {}
-# 	for area in areasToLoad:
-
-# 		tlX = area['pos']['x']
-# 		tlY = area['pos']['y']
-
-# 		planetX = area['planet']['x']
-# 		planetY = area['planet']['y']
-
-# 		geometry = makeBox(tlX, tlY, tlX+qZoom, tlY+qZoom)
-
-# 		for model in models:
-
-# 			itemsQuerySet = globals()[model].objects(city=city, planetX=planetX, planetY=planetY, box__geo_intersects=geometry)
-
-# 			for item in itemsQuerySet:
-# 				checkAddItemFunction(item, items, itemDates, loadDrafts)
-
-# 	if loadDrafts:
-# 		# add drafts
-# 		if owner is not None:
-# 			drafts = Path.objects(city=city, isDraft=True, owner=owner)
-# 			for draft in drafts:
-# 				if not draft.pk in items:
-# 					items[draft.pk] = draft.to_json()
-
-# 	return items
-
-# def getAllItems(models, city, checkAddItemFunction, itemDates=None, owner=None, loadDrafts=True):
-# 	items = {}
-
-# 	for model in models:
-		
-# 		if model == Path and loadDrafts:
-# 			itemsQuerySet = globals()[model].objects(city=city, isDraft=False)
-# 		else:
-# 			itemsQuerySet = globals()[model].objects(city=city)
-
-# 		for item in itemsQuerySet:
-# 			if item.pk not in items:
-# 				items[item.pk] = item.to_json()
-# 		# checkAddItemFunction(item, items, itemDates, loadDrafts)
-
-# 	if loadDrafts:
-# 		# add drafts
-# 		if owner is not None:
-# 			drafts = Path.objects(city=city, isDraft=True, owner=owner)
-# 			for draft in drafts:
-# 				if not draft.pk in items:
-# 					items[draft.pk] = draft.to_json()
-
-# 	return items
-
 @checkDebug
 def loadAll(request, cityName=None):
 
@@ -926,7 +856,7 @@ def loadDraft(request, cityName=None):
 
 	items = []
 	drafts = Drawing.objects(city=cityPk, status='draft', owner=request.user.username).only('status', 'pk', 'clientId', 'owner', 'pathList', 'title')
-	
+
 	# if we could not find a draft and authenticated : create one
 	if request.user.is_authenticated() and len(drafts) == 0:
 		try:
@@ -1008,7 +938,7 @@ def loadDrawingsAndTilesFromBounds(request, bounds, cityName=None, drawingsToIgn
 	if rejected:
 		statusToLoad.append('rejected')
 
-	if bounds['x'] >= city.width / 2 or bounds['y'] >= city.height / 2 or city.width <= 0 or city.height <= 0:
+	if bounds['x'] >= city.width  * city.pixelPerMm / 2 or bounds['y'] >= city.height * city.pixelPerMm / 2 or city.width * city.pixelPerMm <= 0 or city.height * city.pixelPerMm <= 0 or boundsHasNone(bounds):
 	 	return json.dumps( { 'tiles': [], 'items': [], 'user': request.user.username } )
 
 	box = makeBoxFromBounds(city, bounds)
@@ -1030,7 +960,12 @@ def loadDrawingsAndTilesFromBounds(request, bounds, cityName=None, drawingsToIgn
 	tiles = None
 
 	fields = ['status', 'owner', 'pk', 'x', 'y', 'clientId', 'photoURL']
-	tiles = Tile.objects(city=cityPk, box__geo_intersects=box, pk__nin=tilesToIgnore).only(*fields)
+
+	if city.mode == 'ExquisiteCorpse':
+		tiles = Tile.objects(city=cityPk, box__geo_intersects=box, pk__nin=tilesToIgnore, owner=request.user.username).only(*fields)
+	else:
+		tiles = Tile.objects(city=cityPk, box__geo_intersects=box, pk__nin=tilesToIgnore).only(*fields)
+
 	# tiles = Tile.objects(city=cityPk, box__geo_within_polygon=box["coordinates"][0], pk__nin=tilesToIgnore).only(*fields)
 	# tiles = Tile.objects(city=cityPk, box__geo_within_box=box, pk__nin=tilesToIgnore).only(*fields)
 
@@ -1181,7 +1116,14 @@ def loadVotes(request, cityName=None):
 				except DoesNotExist:
 					pass
 
-	return json.dumps( { 'votes': votes } )
+	nTiles = 0
+
+	if cityName:
+		city = getCity(cityName)
+		if city.mode == 'ExquisiteCorpse':
+			nTiles = Tile.objects(owner=request.user.username).count()
+	
+	return json.dumps( { 'votes': votes, 'nTiles': nTiles } )
 
 # # @dajaxice_register
 # @checkDebug
@@ -1380,6 +1322,17 @@ def submitDrawing(request, pk, clientId, svg, date, bounds, title=None, descript
 	drawing.description = description
 
 	drawing.box = makeBoxFromBounds(city, bounds)
+
+	if city.mode == 'ExquisiteCorpse':
+		tiles = Tile.objects(owner=userProfile.username)
+		foundContainingTile = False
+		for tile in tiles:
+			tileBounds = makeBoundsFromBox(city, tile.box)
+			if b1ContainsB2(tileBounds, bounds):
+				foundContainingTile = True
+				break
+		if not foundContainingTile:
+			return json.dumps({'state': 'error', 'message': 'Your path must fit in a single of your tiles'})
 	# if bounds is too large:
 	# 	return json.dumps({'state': 'error', 'message': "The drawing is too large"})
 
@@ -1397,14 +1350,14 @@ def submitDrawing(request, pk, clientId, svg, date, bounds, title=None, descript
 	# Save image
 	if png is not None:
 		imgstr = re.search(r'base64,(.*)', png).group(1)
-		output = open('Wetu/static/drawings/'+pk+'.png', 'wb')
+		output = open('CommeUnDessein/static/drawings/'+pk+'.png', 'wb')
 		imageData = imgstr.decode('base64')
 		output.write(imageData)
 		output.close()
 
 		updateRasters(imageData, bounds, city)
 
-	svgFile = open('Wetu/static/drawings/'+pk+'.svg', 'wb')
+	svgFile = open('CommeUnDessein/static/drawings/'+pk+'.svg', 'wb')
 	svgFile.write(svg)
 	svgFile.close()
 
@@ -1576,12 +1529,17 @@ def submitTile(request, number, x, y, bounds, clientId, cityName):
 
 	cityPk = str(city.pk)
 
-	try:
-		existingTile = Tile.objects.get(city=cityPk, x=x, y=y)
-		return json.dumps({'state': 'error', 'message': 'A tile with this position already exists'})
-	except Tile.DoesNotExist:
-		pass
-
+	if city.mode == 'ExquisiteCorpse':
+		nRevealedTiles = Tile.objects(owner=userProfile.username).count()
+		if nRevealedTiles >= R.city.nTilesMax:
+			return json.dumps({'state': 'error', 'message': 'You already revealed the maximum number of tiles.'})
+	else:
+		try:
+			existingTile = Tile.objects.get(city=cityPk, x=x, y=y)
+			return json.dumps({'state': 'error', 'message': 'A tile with this position already exists'})
+		except Tile.DoesNotExist:
+			pass
+	
 	tile = Tile(author=userProfile, owner=userProfile.username, city=cityPk, number=number, x=x, y=y, box=makeBoxFromBounds(city, bounds), clientId=clientId, dueDate=city.eventDate, placementDate=datetime.datetime.now() + datetime.timedelta(hours=24))
 
 	try:
@@ -1641,7 +1599,7 @@ def createDrawingDiscussion(drawing):
 # 	if userProfile.emailConfirmed:
 # 		drawing.status = 'pending'
 # 		# send_mail('[Comme un dessein] validateDrawing', u'validateDrawing pending ' + str(drawing.pk), 'contact@commeundessein.co', ['idlv.contact@gmail.com'], fail_silently=True)
-# 		cityName = 'Wetu'
+# 		cityName = 'CommeUnDessein'
 # 		try:
 # 			city = City.objects.get(pk=drawing.city)
 # 			cityName = city.name
@@ -1663,7 +1621,7 @@ def bannUser(request, username, reportDrawings=False, reportTiles=False, removeV
 	try:
 		userProfile = UserProfile.objects.get(username=username)
 	except UserProfile.DoesNotExist:
-		return json.dumps({"status": "error", "message": "The user does not exists."})
+		return json.dumps({"status": "error", "message": "The user does not exist."})
 
 	userProfile.banned = True
 
@@ -1745,7 +1703,7 @@ def reportAbuse(request, pk, itemType='drawing'):
 	try:
 		userProfile = UserProfile.objects.get(username=request.user.username)
 	except UserProfile.DoesNotExist:
-		return json.dumps({"status": "error", "message": "The user does not exists."})
+		return json.dumps({"status": "error", "message": "The user does not exist."})
 
 	if not emailIsConfirmed(request, userProfile):
 		return json.dumps({'state': 'error', 'message': 'Please confirm your email'})
@@ -1848,7 +1806,7 @@ def cancelAbuse(request, pk, itemType='drawing'):
 		try:
 			reporter = UserProfile.objects.get(username=drawing.abuseReporter)
 		except UserProfile.DoesNotExist:
-			return json.dumps({"status": "error", "message": "The abuse reporter does not exists."})
+			return json.dumps({"status": "error", "message": "The abuse reporter does not exist."})
 
 		reporter.nFalseReport += 1
 		reporter.save()
@@ -1904,7 +1862,7 @@ def createDrawingThumbnail(request, pk, png=None):
 		return json.dumps({"status": "error", "message": "not_admin"})
 
 	imgstr = re.search(r'base64,(.*)', png).group(1)
-	output = open('Wetu/static/drawings/'+pk+'.png', 'wb')
+	output = open('CommeUnDessein/static/drawings/'+pk+'.png', 'wb')
 	output.write(imgstr.decode('base64'))
 	output.close()
 	return
@@ -2268,10 +2226,10 @@ def setPathsToDrawing(request, pointLists, bounds, pk=None, clientId=None):
 	for p in pointLists:
 		drawing.pathList.append(json.dumps({ 'points': p['points'], 'data': p['data'] }))
 
-	if bounds:
+	if bounds and not boundsHasNone(bounds):
 		drawing.box = makeBoxFromBounds(city, bounds)
-
-	drawing.box = None
+	else:
+		drawing.box = None
 
 	drawing.save()
 
@@ -2314,7 +2272,7 @@ def updateDrawingBounds(request, pk, bounds, svg):
 	drawing.box = makeBoxFromBounds(city, bounds)
 	drawing.save()
 
-	svgFile = open('Wetu/static/drawings/'+pk+'.svg', 'wb')
+	svgFile = open('CommeUnDessein/static/drawings/'+pk+'.svg', 'wb')
 	svgFile.write(svg)
 	svgFile.close()
 
@@ -3237,6 +3195,11 @@ def blendImages(image1, image2, box1, box2, scale = 1, overwrite = False):
 
 	return alpha_composite
 
+def b1ContainsB2(b1, b2):
+	hok = b2['x'] >= b1['x'] and b2['x'] + b2['width'] <= b1['x'] + b1['width']
+	vok = b2['y'] >= b1['y'] and b2['y'] + b2['height'] <= b1['y'] + b1['height']
+	return hok and vok
+
 def boundsOverlap(b1, b2):
 	ileft = max(b1['x'], b2['x'])
 	itop = max(b1['y'], b2['y'])
@@ -3294,7 +3257,7 @@ def removeDrawingFromRasters(city, drawing, rasterType = 'active'):
 
 		if boundsOverlap(drawingBounds, dBounds):
 
-			imageName = 'Wetu/static/drawings/' + str(overlappingDrawing.pk) + '.png'
+			imageName = 'CommeUnDessein/static/drawings/' + str(overlappingDrawing.pk) + '.png'
 			try:
 				dImage = Image.open(imageName)
 
@@ -3321,7 +3284,7 @@ def updateRasters(imageData, bounds, city):
 def updateRastersFromDrawing(city, drawing, rasterType = 'active'):
 
 	try:
-		image = Image.open('Wetu/static/drawings/'+str(drawing.pk)+'.png')
+		image = Image.open('CommeUnDessein/static/drawings/'+str(drawing.pk)+'.png')
 	except IOError:
 		return { 'state': 'error', 'message': 'impossible to read the drawing image.'}
 
@@ -3373,7 +3336,7 @@ def updateRastersFromImage(image, bounds, city, overwrite = False, rasterType = 
 		for xi in range(l, r):
 			for yi in range(t, b):
 				
-				rasterName = 'Wetu/static/rasters/' + city.name + '/' + rasterType + '/zoom' + str(n) + '/' + str(xi) + ',' + str(yi) + '.png'
+				rasterName = 'CommeUnDessein/static/rasters/' + city.name + '/' + rasterType + '/zoom' + str(n) + '/' + str(xi) + ',' + str(yi) + '.png'
 				rasterDir = os.path.abspath(os.path.join(rasterName, os.pardir))
 				if not os.path.exists(rasterDir):
 					os.makedirs(rasterDir)
@@ -3467,7 +3430,7 @@ def submitTilePhoto(request, pk, imageName, dataURL):
 		return json.dumps({'state': 'error', 'message': 'The tile is not in pending state'})
 
 	imgstr = re.search(r'base64,(.*)', dataURL).group(1)
-	output = open('Wetu/media/images/'+imageName+'.jpg', 'wb')
+	output = open('CommeUnDessein/media/images/'+imageName+'.jpg', 'wb')
 	imageData = imgstr.decode('base64')
 	output.write(imageData)
 	output.close()
@@ -3486,7 +3449,7 @@ def submitTilePhoto(request, pk, imageName, dataURL):
 # def uploadImage(request, imageName, dataURL):
 
 # 	imgstr = re.search(r'base64,(.*)', dataURL).group(1)
-# 	output = open('Wetu/media/images/'+imageName+'.jpg', 'wb')
+# 	output = open('CommeUnDessein/media/images/'+imageName+'.jpg', 'wb')
 # 	imageData = imgstr.decode('base64')
 # 	output.write(imageData)
 # 	output.close()
@@ -3748,8 +3711,8 @@ def importDB(path):
 # 			erodedData = np.asarray(eroded)
 # 			finalColorData = np.where(erodedData == 0, mask, colorData)
 # 			finalColorImage = Image.fromarray(finalColorData.astype(np.uint8))
-# 			finalColorImage.save('Wetu/media/imageToSVG.bmp', 'BMP')
-# 			command = 'autotrace -centerline -output-format svg Wetu/media/imageToSVG.bmp'.split()
+# 			finalColorImage.save('CommeUnDessein/media/imageToSVG.bmp', 'BMP')
+# 			command = 'autotrace -centerline -output-format svg CommeUnDessein/media/imageToSVG.bmp'.split()
 # 			process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 # 			stdout, stderr = process.communicate()
 # 			svgs.append(stdout)
@@ -3757,9 +3720,9 @@ def importDB(path):
 # 				return json.dumps( {'state': 'error', 'svg': stdout, 'error': stderr } )
 
 # 		# finalImage = image.point(lambda i: 255 if i > 128 else 0)
-# 		# finalImage.save('Wetu/media/imageToSVG.bmp', 'BMP')
-# 		# # command = 'autotrace -centerline -color-count 2 -output-format svg Wetu/media/imageToSVG.bmp'.split()
-# 		# command = 'autotrace -centerline -output-format svg Wetu/media/imageToSVG.bmp'.split()
+# 		# finalImage.save('CommeUnDessein/media/imageToSVG.bmp', 'BMP')
+# 		# # command = 'autotrace -centerline -color-count 2 -output-format svg CommeUnDessein/media/imageToSVG.bmp'.split()
+# 		# command = 'autotrace -centerline -output-format svg CommeUnDessein/media/imageToSVG.bmp'.split()
 
 # 		# process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 # 		# stdout, stderr = process.communicate()
@@ -3792,13 +3755,13 @@ def autoTrace(request, png, colors):
 	
 	try:
 		image = Image.open(StringIO.StringIO(imageData))
-		image.save('Wetu/media/imageToSVG.bmp', 'BMP')
-		# image.save('Wetu/media/imageToSVG.png', 'png')
-		command = 'autotrace -centerline -background-color FFFFFF -color-count 0 -output-format svg Wetu/media/imageToSVG.bmp'.split()
+		image.save('CommeUnDessein/media/imageToSVG.bmp', 'BMP')
+		# image.save('CommeUnDessein/media/imageToSVG.png', 'png')
+		command = 'autotrace -centerline -background-color FFFFFF -color-count 0 -output-format svg CommeUnDessein/media/imageToSVG.bmp'.split()
 		process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 		stdout, stderr = process.communicate()
 
-		output = 'Wetu/media/output.html'
+		output = 'CommeUnDessein/media/output.html'
 
 		with open(output, 'w') as out:
 			
@@ -3827,9 +3790,9 @@ def autoTrace(request, png, colors):
 			return json.dumps( {'state': 'error', 'svg': stdout, 'error': stderr } )
 
 		# finalImage = image.point(lambda i: 255 if i > 128 else 0)
-		# finalImage.save('Wetu/media/imageToSVG.bmp', 'BMP')
-		# # command = 'autotrace -centerline -color-count 2 -output-format svg Wetu/media/imageToSVG.bmp'.split()
-		# command = 'autotrace -centerline -output-format svg Wetu/media/imageToSVG.bmp'.split()
+		# finalImage.save('CommeUnDessein/media/imageToSVG.bmp', 'BMP')
+		# # command = 'autotrace -centerline -color-count 2 -output-format svg CommeUnDessein/media/imageToSVG.bmp'.split()
+		# command = 'autotrace -centerline -output-format svg CommeUnDessein/media/imageToSVG.bmp'.split()
 
 		# process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 		# stdout, stderr = process.communicate()

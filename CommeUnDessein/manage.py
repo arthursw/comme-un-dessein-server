@@ -8,7 +8,7 @@ import sys
 # monkey.patch_all()
 
 if __name__ == "__main__":
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Wetu.settings")
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "CommeUnDessein.settings")
 
     from django.core.management import execute_from_command_line
 

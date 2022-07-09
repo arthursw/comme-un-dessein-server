@@ -151,7 +151,7 @@ class Drawing(Document):
     status = StringField(default='draft', required=True)
     previousStatus = StringField(default='draft')
     paths = ListField(ReferenceField('Path'))
-    svg = StringField()
+    svg = StringField(unique=False, required=False)
     pathList = ListField(StringField())
 
     # bounds = StringField()
@@ -163,10 +163,10 @@ class Drawing(Document):
     votes = ListField(ReferenceField('Vote', reverse_delete_rule=PULL))
     comments = ListField(ReferenceField('Comment', reverse_delete_rule=PULL))
     
-    title = StringField()
-    description = StringField()
+    title = StringField(unique=False, required=False, default='')
+    description = StringField(unique=False, required=False)
 
-    discussionId = IntField()
+    discussionId = IntField(required=False)
 
     # lastUpdate = DateTimeField(default=datetime.datetime.now)
     
@@ -358,12 +358,16 @@ class City(Document):
     pixelPerMm = DecimalField(default=1)
     width = DecimalField(default=4000)
     height = DecimalField(default=3000)
+    tileWidth = DecimalField(default=100)
+    tileHeight = DecimalField(default=100)
     finished = BooleanField(default=False)
     useSVG = BooleanField(default=False)
     mode = StringField(default='CommeUnDessein')
     eventLocation = StringField()
     eventDate = DateTimeField(default=datetime.datetime.now)
     
+    nTilesMax = IntField(default=3)
+
     nParticipants = IntField(default=0)
     squareMeters = DecimalField(default=0)
 

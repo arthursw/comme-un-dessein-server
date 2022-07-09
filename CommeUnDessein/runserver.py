@@ -9,7 +9,7 @@ from psycogreen.gevent import patch_psycopg
 
 
 dir = os.path.dirname(__file__)
-sys.path.insert(0, os.path.join(dir, 'Wetu'))
+sys.path.insert(0, os.path.join(dir, 'CommeUnDessein'))
 
 try:
     import settings
