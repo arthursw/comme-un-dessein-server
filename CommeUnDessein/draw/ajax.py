@@ -1541,7 +1541,7 @@ def submitTile(request, number, x, y, bounds, clientId, cityName):
 
 	if city.mode == 'ExquisiteCorpse':
 		nRevealedTiles = Tile.objects(owner=userProfile.username).count()
-		if nRevealedTiles >= R.city.nTilesMax:
+		if nRevealedTiles >= city.nTilesMax:
 			return json.dumps({'state': 'error', 'message': 'You already revealed the maximum number of tiles.'})
 	else:
 		try:

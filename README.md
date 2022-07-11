@@ -175,3 +175,8 @@ SSL config https://www.digitalocean.com/community/tutorials/how-to-secure-nginx-
 # Notes
 
 In local settings, APPLICATION can be either "COMME_UN_DESSEIN" or "ESPERO".
+
+## MongoDB on os X
+
+`mongod --config /usr/local/etc/mongod.conf` if `/data/db/` is not found
+
