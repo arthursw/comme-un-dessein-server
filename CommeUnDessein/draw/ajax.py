@@ -36,7 +36,7 @@ from mongoengine import ValidationError
 from mongoengine.queryset import Q
 import time
 
-from PIL import Image, ImageFilter
+from PIL import Image, ImageFilter, ImageOps
 import colorsys
 import cStringIO
 import StringIO
@@ -3081,7 +3081,7 @@ def getNextValidatedDrawing(request, cityName, secret):
 							pJSON = json.loads(path)
 							paths.append(json.dumps({'data': json.dumps({'points': pJSON['points'], 'data': pJSON['data'], 'planet': {'x': 0, 'y': 0}}), '_id': {'$oid': None} }))
 
-						return  json.dumps( {'state': 'success', 'pk': str(drawing.pk), 'items': paths, 'svg': drawing.svg } )
+						return  json.dumps( {'state': 'success', 'pk': str(drawing.pk), 'items': paths, 'svg': drawing.svg, 'cityWidth': city.width, 'cityHeight': city.height, 'cityPixelPerMm': city.pixelPerMm } )
 			except DoesNotExist:
 				pass
 		
@@ -3765,9 +3765,11 @@ def autoTrace(request, png, colors):
 	
 	try:
 		image = Image.open(StringIO.StringIO(imageData))
+		image = image.resize((min(image.width, 1000), min(image.height, 1000)), resample=Image.NEAREST)
+		# image = ImageOps.grayscale(image)
 		image.save('CommeUnDessein/media/imageToSVG.bmp', 'BMP')
 		# image.save('CommeUnDessein/media/imageToSVG.png', 'png')
-		command = 'autotrace -centerline -background-color FFFFFF -color-count 0 -output-format svg CommeUnDessein/media/imageToSVG.bmp'.split()
+		command = 'autotrace -centerline -background-color FFFFFF -color-count 2 -output-format svg CommeUnDessein/media/imageToSVG.bmp'.split()
 		process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 		stdout, stderr = process.communicate()
 
