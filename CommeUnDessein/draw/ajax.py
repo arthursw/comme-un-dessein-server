@@ -3081,7 +3081,7 @@ def getNextValidatedDrawing(request, cityName, secret):
 							pJSON = json.loads(path)
 							paths.append(json.dumps({'data': json.dumps({'points': pJSON['points'], 'data': pJSON['data'], 'planet': {'x': 0, 'y': 0}}), '_id': {'$oid': None} }))
 
-						return  json.dumps( {'state': 'success', 'pk': str(drawing.pk), 'items': paths, 'svg': drawing.svg, 'cityWidth': city.width, 'cityHeight': city.height, 'cityPixelPerMm': city.pixelPerMm } )
+						return  json.dumps( {'state': 'success', 'pk': str(drawing.pk), 'items': paths, 'svg': drawing.svg, 'cityWidth': float(city.width), 'cityHeight': float(city.height), 'cityPixelPerMm': float(city.pixelPerMm) } )
 			except DoesNotExist:
 				pass
 		
