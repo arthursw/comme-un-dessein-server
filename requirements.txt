@@ -2,7 +2,7 @@ certifi==2017.4.17
 chardet==3.0.3
 Django==1.9.13
 django-allauth==0.32.0
-django-anymail==0.11.1
+django-anymail==1.2.1
 django-cors-headers==2.1.0
 gevent==1.1b4
 gevent-socketio==0.3.6
