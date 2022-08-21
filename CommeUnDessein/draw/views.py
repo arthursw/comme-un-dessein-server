@@ -37,6 +37,7 @@ def addCityToResult(result, city):
 	result['cityHeight'] = city.height
 	result['cityPixelPerMm'] = city.pixelPerMm
 	result['cityUseSVG'] = city.useSVG
+	result['cityUseColors'] = city.useColors
 	result['cityMode'] = city.mode or 'CommeUnDessein'
 	result['cityTileWidth'] = city.tileWidth
 	result['cityTileHeight'] = city.tileHeight

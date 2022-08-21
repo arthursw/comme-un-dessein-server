@@ -846,7 +846,7 @@ def loadAll(request, cityName=None):
 @checkSimulateSlowResponse
 @checkDebug
 def loadDraft(request, cityName=None):
-
+	
 	city = getCity(cityName)
 
 	if not city:
@@ -3765,7 +3765,9 @@ def autoTrace(request, png, colors):
 	
 	try:
 		image = Image.open(StringIO.StringIO(imageData))
-		image = image.resize((min(image.width, 1000), min(image.height, 1000)), resample=Image.NEAREST)
+		if image.width > 1500 or image.height > 1500:
+			return json.dumps({'state': 'error', 'message': 'The image width and height must be smaller than 1500 pixels'})
+		# image = image.resize((min(image.width, 1000), min(image.height, 1000)), resample=Image.NEAREST)
 		# image = ImageOps.grayscale(image)
 		image.save('CommeUnDessein/media/imageToSVG.bmp', 'BMP')
 		# image.save('CommeUnDessein/media/imageToSVG.png', 'png')

@@ -362,6 +362,7 @@ class City(Document):
     tileHeight = DecimalField(default=100)
     finished = BooleanField(default=False)
     useSVG = BooleanField(default=False)
+    useColors = BooleanField(default=True)
     mode = StringField(default='CommeUnDessein')
     eventLocation = StringField()
     eventDate = DateTimeField(default=datetime.datetime.now)
