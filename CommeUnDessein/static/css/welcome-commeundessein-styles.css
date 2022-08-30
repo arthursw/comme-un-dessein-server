@@ -129,7 +129,7 @@ ul.button-list li span.title {
   padding: 60px;
   max-width: 600px;
   max-height: 100%;
-  overflow-y: scroll;
+  overflow-y: auto;
   width: 100%;
   display: block;
   top: 50%;
