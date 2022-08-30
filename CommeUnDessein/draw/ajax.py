@@ -3776,7 +3776,7 @@ def autoTrace(request, png, colors):
 		r = np.arange(image.size[1])
 		r2 = np.repeat(r[:, np.newaxis], image.size[0], axis=1)
 		mask = np.where(r2 % 6 == 0, 255, 0)
-		eroded = image.filter(ImageFilter.MaxFilter(15))
+		eroded = image.filter(ImageFilter.MaxFilter(10))
 		eroded_data = np.asarray(eroded)
 		final_data = np.where(eroded_data == 0, mask, image_data)
 		image = Image.fromarray(final_data.astype(np.uint8))
