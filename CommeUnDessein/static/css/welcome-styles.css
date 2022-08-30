@@ -339,6 +339,11 @@ form ul.button-list li {
 form ul.button-list li a {
   text-decoration: none;
   color: #666;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 form ul.button-list li a:hover,
 form ul.button-list li a:hover:visited {
