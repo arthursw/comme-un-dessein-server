@@ -230,7 +230,7 @@ ul.button-list li span.title {
 #submit-signup {
   margin-top: 10px;
 }
-.social-buttons li a {
+ul.social-buttons li a {
   width: 100%;
   height: 100%;
   display: flex;

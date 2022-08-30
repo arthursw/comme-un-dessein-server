@@ -552,7 +552,7 @@ form .cd-footer .btn:focus {
 #cd-form-footer {
   margin-top: 20px;
 }
-.social-buttons li a {
+ul.social-buttons li a {
   width: 100%;
   height: 100%;
   display: flex;
