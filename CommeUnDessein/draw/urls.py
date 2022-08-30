@@ -14,6 +14,7 @@ urlpatterns = [
     url(r'^email/reactivation/$', views.disableEmail, {'activation': True}),
     url(r'^ajaxCallNoCSRF/$', views.ajaxCallNoCSRF),
     
+    
     url(r'^draw/templates/index\.html', views.index, name='index'),
     url(r'^draw/index\.html', views.index, name='index'),
     url(r'^index\.html', views.index, name='index'),
@@ -28,6 +29,7 @@ urlpatterns = [
     url(r'^about\.html', views.about),
     url(r'^privacy-policy\.html', views.privacyPolicy),
     url(r'^terms-of-service\.html', views.termsOfService),
+    url(r'^delete-account-instructions\.html', views.deleteAccountInstructions),
     
     url(r'^(?P<cityName>(?!admin)[\w-]+)/$', views.index, {'visit': True}, name='index'),
     url(r'^(?P<cityName>(?!admin)[\w-]+)/drawing-(?P<pk>[\w]+)$', views.index, {'visit': True}, name='index'),

@@ -126,6 +126,7 @@
     onResizeWindow();
     window.onresize = onResizeWindow;
     justLoggedIn = localStorage.getItem('just-logged-in') === 'true';
+
     if (justLoggedIn) {
       localStorage.removeItem('just-logged-in');
     }

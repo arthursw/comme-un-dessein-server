@@ -41,6 +41,20 @@
       'display': 'flex',
       'flex-direction': 'row-reverse'
     });
+
+    let warnCookies = ()=> {
+
+    }
+
+    $('#submit-signup, ul.social-buttons li').click((event)=>{
+      if(!$('#accept_cookies').is(':checked')) {
+        // alert('Vous devez accepter les cookies nécessaire au fonctionnement du site (et aucun autre) pour continuer.')
+        $('label[for="accept_cookies"]').css({'color': 'red', 'font-weight': 'bold'})
+        event.preventDefault();
+        event.stopPropagation();
+        return -1;
+      }
+    })
   });
 
   // $(document).ready () ->

@@ -3586,6 +3586,12 @@ form.login ul.errorlist {
   border: none;
   border-radius: 7px;
 }
+
+@media (max-width: 500px) {
+  .trace-type-btn video{ 
+    display: none;
+  }
+}
 /* 
 .alert-danger {
   color: #a94442;

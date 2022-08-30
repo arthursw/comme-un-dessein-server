@@ -45,7 +45,7 @@
     </script>
   </head>
 
-  <body class="cd-column cd-grow" data-authenticated="{{ request.user.is_authenticated }}">
+  <body class="cd-column cd-grow" data-authenticated="{{ request.user.is_authenticated }}" data-email-confirmed="{{ request.user.email.verified }}">
   
     <!-- <div class="cd-container">
       <img src="{% static 'images/CommeUnDessein.svg' %}">

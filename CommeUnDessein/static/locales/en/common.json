@@ -19,5 +19,6 @@
     "You can still reveal n tiles": "You have {{tileNumber}} tiles left to reveal.",
 	"You can still reveal n tiles_plural": "You have {{count}} tiles left to reveal.",
     "You cannot reveal more than n tiles": "You cannot reveal more than one tile.",
-    "You cannot reveal more than n tiles_plural": "You cannot reveal more than {{count}} tiles."
+    "You cannot reveal more than n tiles_plural": "You cannot reveal more than {{count}} tiles.",
+	"Thanks for signing up": "Thanks for signing up! You just need to click on the confirmation link that was sent to your email address to validate your account :-)"
 }

@@ -63,7 +63,9 @@ body {
 	position: absolute;
     background: white;
     padding: 60px;
-    width: 600px;
+    max-width: 600px;
+    max-height: 100%;
+	overflow-y: scroll;
     box-shadow: 3px 3px 5px 1px;
     display: none;
 	form {
@@ -300,9 +302,24 @@ button {
 .cd-container {
     width: 100%;
 	max-width: 450px;
+    margin: 20px;
 }
 
+.cd-row label {
+	margin-left: 10px;
+}
+
+.cd-pointer {
+	cursor: pointer;
+	input, label {
+		cursor: pointer;
+	}
+}
+#submit-signup {
+	margin-top: 10px;
+}
 form {
+
 	padding-top: 10vh;
 
 	label[for="id_login"], label[for="id_password"], label[for="id_email"], label[for="id_username"], label[for="id_password1"] {
@@ -618,6 +635,14 @@ form {
 
 #cd-form-footer {
 	margin-top: 20px;
+}
+
+.social-buttons li a {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .social-account-buttons {

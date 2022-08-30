@@ -1307,7 +1307,7 @@ def submitDrawing(request, pk, clientId, svg, date, bounds, title=None, descript
 		return json.dumps({'state': 'error', 'message': 'Your account has been suspended'})
 
 	if not emailIsConfirmed(request, userProfile):
-		return json.dumps({'state': 'error', 'message': 'Please confirm your email'})
+		return json.dumps({'state': 'error', 'message': 'Please confirm your email by clicking on the activation link that was sent to your mailbox'})
 
 	drawing = getDrawing(pk, clientId)
 
@@ -1405,7 +1405,7 @@ def submitDiscussion(request, clientId, title, cityName, bounds):
 		return json.dumps({'state': 'error', 'message': 'Your account has been suspended'})
 
 	if not emailIsConfirmed(request, userProfile):
-		return json.dumps({'state': 'error', 'message': 'Please confirm your email'})
+		return json.dumps({'state': 'error', 'message': 'Please confirm your email by clicking on the activation link that was sent to your mailbox'})
 
 	city = getCity(cityName)
 	
@@ -1457,7 +1457,7 @@ def updateDiscussion(request, pk, title, bounds):
 		return json.dumps({'state': 'error', 'message': 'Your account has been suspended'})
 
 	if not emailIsConfirmed(request, userProfile):
-		return json.dumps({'state': 'error', 'message': 'Please confirm your email'})
+		return json.dumps({'state': 'error', 'message': 'Please confirm your email by clicking on the activation link that was sent to your mailbox'})
 
 	try:
 		discussion = Discussion.objects.get(pk=pk)
@@ -1529,7 +1529,7 @@ def submitTile(request, number, x, y, bounds, clientId, cityName):
 		return json.dumps({'state': 'error', 'message': 'Your account has been suspended'})
 
 	if not emailIsConfirmed(request, userProfile):
-		return json.dumps({'state': 'error', 'message': 'Please confirm your email'})
+		return json.dumps({'state': 'error', 'message': 'Please confirm your email by clicking on the activation link that was sent to your mailbox'})
 
 
 	city = getCity(cityName)
@@ -1716,7 +1716,7 @@ def reportAbuse(request, pk, itemType='drawing'):
 		return json.dumps({"status": "error", "message": "The user does not exist."})
 
 	if not emailIsConfirmed(request, userProfile):
-		return json.dumps({'state': 'error', 'message': 'Please confirm your email'})
+		return json.dumps({'state': 'error', 'message': 'Please confirm your email by clicking on the activation link that was sent to your mailbox'})
 
 	if not userProfile.emailConfirmed:
 		return json.dumps({"status": "error", "message": "Your email must be confirmed to report an abuse."})
@@ -2710,7 +2710,7 @@ def vote(request, pk, date, positive, itemType='drawing'):
 		return json.dumps({'state': 'error', 'message': 'Your account has been suspended'})
 
 	if not emailIsConfirmed(request, user):
-		return json.dumps({'state': 'error', 'message': 'Please confirm your email'})
+		return json.dumps({'state': 'error', 'message': 'Please confirm your email by clicking on the activation link that was sent to your mailbox'})
 
 	item = None
 	if itemType == 'drawing':
@@ -2880,7 +2880,7 @@ def addComment(request, itemPk, comment, date, itemType, insertAfter=None):
 		return json.dumps({'state': 'not_logged_in'})
 
 	if not emailIsConfirmed(request):
-		return json.dumps({'state': 'error', 'message': 'Please confirm your email'})
+		return json.dumps({'state': 'error', 'message': 'Please confirm your email by clicking on the activation link that was sent to your mailbox'})
 
 	item = None
 	if itemType == 'drawing':
@@ -2962,7 +2962,7 @@ def modifyComment(request, commentPk, comment):
 		return json.dumps({'state': 'error', 'message': 'Your account has been suspended'})
 
 	if not emailIsConfirmed(request, user):
-		return json.dumps({'state': 'error', 'message': 'Please confirm your email'})
+		return json.dumps({'state': 'error', 'message': 'Please confirm your email by clicking on the activation link that was sent to your mailbox'})
 
 	c = None
 	try:
@@ -2999,7 +2999,7 @@ def deleteComment(request, commentPk):
 		return json.dumps({'state': 'error', 'message': 'Your account has been suspended'})
 
 	if not emailIsConfirmed(request, user):
-		return json.dumps({'state': 'error', 'message': 'Please confirm your email'})
+		return json.dumps({'state': 'error', 'message': 'Please confirm your email by clicking on the activation link that was sent to your mailbox'})
 
 	c = None
 	try:
@@ -3683,7 +3683,7 @@ def importDB(path):
 # 		return json.dumps({'state': 'error', 'message': 'Your account has been suspended'})
 
 # 	if not emailIsConfirmed(request, userProfile):
-# 		return json.dumps({'state': 'error', 'message': 'Please confirm your email'})
+# 		return json.dumps({'state': 'error', 'message': 'Please confirm your email by clicking on the activation link that was sent to your mailbox'})
 
 # 	imgstr = re.search(r'base64,(.*)', png).group(1)
 # 	imageData = imgstr.decode('base64')
@@ -3758,7 +3758,7 @@ def autoTrace(request, png, colors):
 		return json.dumps({'state': 'error', 'message': 'Your account has been suspended'})
 
 	if not emailIsConfirmed(request, userProfile):
-		return json.dumps({'state': 'error', 'message': 'Please confirm your email'})
+		return json.dumps({'state': 'error', 'message': 'Please confirm your email by clicking on the activation link that was sent to your mailbox'})
 
 	imgstr = re.search(r'base64,(.*)', png).group(1)
 	imageData = imgstr.decode('base64')
@@ -3769,9 +3769,14 @@ def autoTrace(request, png, colors):
 			return json.dumps({'state': 'error', 'message': 'The image width and height must be smaller than 1500 pixels'})
 		# image = image.resize((min(image.width, 1000), min(image.height, 1000)), resample=Image.NEAREST)
 		# image = ImageOps.grayscale(image)
+		image = image.convert('L')
+		image = image.point( lambda p: 255 if p > 128 else 0 )
+		image = image.convert('1')
 		image.save('CommeUnDessein/media/imageToSVG.bmp', 'BMP')
 		# image.save('CommeUnDessein/media/imageToSVG.png', 'png')
-		command = 'autotrace -centerline -background-color FFFFFF -color-count 2 -output-format svg CommeUnDessein/media/imageToSVG.bmp'.split()
+		# import pdb; pdb.set_trace()
+		# command = 'autotrace -centerline -background-color FFFFFF -color-count 2 -output-format svg CommeUnDessein/media/imageToSVG.bmp'.split()
+		command = 'autotrace -centerline -background-color FFFFFF -output-format svg CommeUnDessein/media/imageToSVG.bmp'.split()
 		process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 		stdout, stderr = process.communicate()
 
@@ -3801,7 +3806,7 @@ def autoTrace(request, png, colors):
 			""")
 			
 		if stderr:
-			return json.dumps( {'state': 'error', 'svg': stdout, 'error': stderr } )
+			return json.dumps( {'state': 'error', 'svg': stdout, 'error': stderr, 'message': stderr } )
 
 		# finalImage = image.point(lambda i: 255 if i > 128 else 0)
 		# finalImage.save('CommeUnDessein/media/imageToSVG.bmp', 'BMP')

@@ -186,6 +186,9 @@ def termsOfService(request):
 def privacyPolicy(request):
 	return render_to_response(	"privacy-policy.html", {}, RequestContext(request) )
 
+def deleteAccountInstructions(request):
+	return render_to_response(	"delete-account-instructions.html", {}, RequestContext(request) )
+
 # def connections(request):
 # 	if not request.user.is_authenticated():
 # 		return render_to_response(	"connections.html", {}, RequestContext(request) )
@@ -198,8 +201,8 @@ def ajaxCall(request):
 		function = data["function"]
 		args = data["args"]
 
-		print "ajaxCall"
-		print function
+		# print "ajaxCall"
+		# print function
 
 		if args is None:
 			args = {}
@@ -216,8 +219,8 @@ def ajaxCallNoCSRF(request):
 	function = data["function"]
 	if function == "getNextValidatedDrawing" or function == "setDrawingStatusDrawn":
 		args = data["args"]
-		print "ajaxCallNoCSRF"
-		print function
+		# print "ajaxCallNoCSRF"
+		# print function
 		if args is None:
 			args = {}
 		args['request'] = request
