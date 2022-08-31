@@ -3776,9 +3776,11 @@ def autoTrace(request, png, colors):
 		r = np.arange(image.size[1])
 		r2 = np.repeat(r[:, np.newaxis], image.size[0], axis=1)
 		mask = np.where(r2 % 6 == 0, 255, 0)
-		eroded = image.filter(ImageFilter.MaxFilter(9))
+		eroded = image.filter(ImageFilter.MaxFilter(7))
+		eroded2 = eroded.filter(ImageFilter.MaxFilter(3))
 		eroded_data = np.asarray(eroded)
-		final_data = np.where(eroded_data == 0, mask, image_data)
+		eroded2_data = np.asarray(eroded2)
+		final_data = np.where(eroded2_data == 0, mask, 255*(image_data == eroded_data).astype(np.uint8))
 		image = Image.fromarray(final_data.astype(np.uint8))
 		image = image.convert('1')
 		image.save('CommeUnDessein/media/imageToSVG.bmp', 'BMP')
@@ -3813,7 +3815,7 @@ def autoTrace(request, png, colors):
 				</body>
 			</html>
 			""")
-			
+		
 		if stderr:
 			return json.dumps( {'state': 'error', 'svg': stdout, 'error': stderr, 'message': stderr } )
 
