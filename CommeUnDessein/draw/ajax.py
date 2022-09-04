@@ -2376,7 +2376,7 @@ def cancelDrawing(request, pk):
 	except Drawing.DoesNotExist:
 		return json.dumps({'state': 'error', 'message': 'Element does not exist for this user.'})
 
-	if not userAllowed(request, drawing.owner):
+	if request.user.username != drawing.owner:
 		return json.dumps({'state': 'error', 'message': 'Not owner of drawing'})
 	
 	try:
