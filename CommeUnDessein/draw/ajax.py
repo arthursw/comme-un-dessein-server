@@ -2430,7 +2430,7 @@ def cancelDrawing(request, pk):
 
 	drawingChanged.send(sender=None, type='cancel', clientId=drawing.clientId, pk=str(drawing.pk), itemType='drawing')
 
-	return json.dumps( { 'state': 'success', 'pk': pk, 'status': drawing.status, 'pathList': drawing.pathList } )
+	return json.dumps( { 'state': 'success', 'pk': pk, 'status': drawing.status, 'clientId':drawing.clientId, 'pathList': drawing.pathList } )
 
 @checkSimulateSlowResponse
 @checkDebug
