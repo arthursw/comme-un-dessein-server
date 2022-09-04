@@ -2403,6 +2403,8 @@ def cancelDrawing(request, pk):
 		for draft in drafts:
 			if len(draft.pathList) > 0:
 				return json.dumps({'state': 'error', 'message': "You must submit your draft before cancelling a drawing"})
+			elif draft.pk != drawing.pk:
+				draft.delete()
 	except Drawing.DoesNotExist:
 		pass
 
@@ -3780,7 +3782,8 @@ def autoTrace(request, png, colors):
 		eroded2 = eroded.filter(ImageFilter.MaxFilter(3))
 		eroded_data = np.asarray(eroded)
 		eroded2_data = np.asarray(eroded2)
-		final_data = np.where(eroded2_data == 0, mask, 255*(image_data == eroded_data).astype(np.uint8))
+		# final_data = np.where(eroded2_data == 0, mask, 255*(image_data == eroded_data).astype(np.uint8))
+		final_data = np.where(eroded2_data == 0, 255, 255*(image_data == eroded_data).astype(np.uint8))
 		image = Image.fromarray(final_data.astype(np.uint8))
 		image = image.convert('1')
 		image.save('CommeUnDessein/media/imageToSVG.bmp', 'BMP')

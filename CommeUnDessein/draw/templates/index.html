@@ -946,24 +946,25 @@
     <div id="camera">
       <button id="cancel-photo" class="btn"><span class="glyphicon glyphicon-remove" aria-hidden="true"> </button>
       
-      <div class="cd-sliders cd-column" style="display: none;">
+      <div class="cd-sliders cd-column">
         
-        <div class="cd-slider cd-row saturation">
+        <div class="cd-slider cd-row saturation" style="display: none;">
           <button class="btn minus"><span class="glyphicon glyphicon-minus" aria-hidden="true"> </button>
           <div class="cd-inline">
             <span class="cd-line"></span>
-            <span class="glyphicon glyphicon-tint" aria-hidden="true"></span>
+            <span class="cursor glyphicon glyphicon-tint" aria-hidden="true"></span>
             <span class="cd-line"></span>
           </div>
           <button class="btn plus"><span class="glyphicon glyphicon-plus" aria-hidden="true"> </button>
         </div>
 
-        <div class="cd-slider cd-row lightness">
+        <!-- <div class="cd-slider cd-row lightness"> -->
+        <div class="cd-slider cd-row threshold">
           <button class="btn minus"><span class="glyphicon glyphicon-minus" aria-hidden="true"> </button>
             <div class="cd-inline">
               <span class="cd-line"></span>
               <!-- <span class="glyphicon glyphicon-lamp" aria-hidden="true"></span> -->
-              <span class="glyphicon glyphicon-adjust" aria-hidden="true"></span>
+              <span class="cursor glyphicon glyphicon-adjust" aria-hidden="true"></span>
               <span class="cd-line"></span>
             </div>
             <button class="btn plus"><span class="glyphicon glyphicon-plus" aria-hidden="true"> </button>

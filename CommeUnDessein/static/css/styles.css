@@ -2391,7 +2391,7 @@ body.hand #drawingPanel .container .content .votes button img.hand {
 }
 #CommeUnDessein_alerts.top.activated.show {
   bottom: auto;
-  top: 63px;
+  top: 62px;
 }
 #CommeUnDessein_alerts {
   position: absolute;
@@ -3514,7 +3514,7 @@ body:not(.r-alert-top) #submit-drawing-button.r-alert {
   padding-bottom: 50px;
 }
 #drawingPanel.r-alert-top {
-  top: 113px;
+  top: 112px;
 }
 #drawingPanel .panel-handle {
   float: left;
@@ -4415,6 +4415,9 @@ body.allauth p input[type="email"] {
   }
 }
 @media (max-width: 370px) {
+  #take-photo {
+    bottom: 0px;
+  }
   #CommeUnDessein_alerts.top.activated.show {
     top: 54px;
   }
@@ -5293,7 +5296,7 @@ form.login ul.errorlist {
 }
 #camera .cd-sliders {
   position: absolute;
-  bottom: 140px;
+  bottom: 90px;
   left: 0;
   padding: 0 50px;
   width: 100%;
