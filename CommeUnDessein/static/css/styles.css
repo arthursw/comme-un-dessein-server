@@ -3805,9 +3805,11 @@ body:not(.r-alert-top) #submit-drawing-button.r-alert {
   flex-grow: 1;
   align-items: center;
   margin-left: 0px;
+  display: flex;
+  justify-content: center;
 }
 #drawingPanel .container .content .votes button img {
-  margin-right: 8px;
+  margin-right: 4px;
   width: 40px;
   display: none;
 }
