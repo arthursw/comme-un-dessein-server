@@ -92,7 +92,7 @@ def sendEmails():
 				message = 'Bonjour, \n\nVoici les dernières notifications de ' + applicationName + ' :\n\n'
 				message += '<ul>\n'
 				for emailNotification in user.emailNotifications:
-					message += '<li>' + emailNotification + '</li>\n'
+					message += '<li>' + unicode(emailNotification) + '</li>\n'
 
 				message += '</ul>\n\n'
 				siteDomain = shortcuts.get_current_site(request).domain
@@ -1212,7 +1212,8 @@ def saveDrawing(request, clientId, cityName, date, title, description=None, poin
 			if len(draft.pathList) > 0:
 				return json.dumps({'state': 'error', 'message': "You must submit your draft before create a new one"})
 			else:
-				draft.delete()
+				draft.status = 'modified'
+				draft.save()
 
 	try:
 		drawing = Drawing(clientId=clientId, city=cityPk, planetX=0, planetY=0, owner=request.user.username, pathList=pathList, date=datetime.datetime.fromtimestamp(date/1000.0), title=title, description=description, status='draft')
@@ -2217,7 +2218,6 @@ def setPathsToDrawing(request, pointLists, bounds, pk=None, clientId=None):
 
 	if drawing is None:
 		return json.dumps({'state': 'error', 'message': 'Element does not exist'})
-
 	try:
 		city = City.objects.get(pk=drawing.city)
 		if city.finished:
@@ -2228,14 +2228,14 @@ def setPathsToDrawing(request, pointLists, bounds, pk=None, clientId=None):
 	if not userAllowed(request, drawing.owner):
 		return json.dumps({'state': 'error', 'message': 'Not owner of drawing'})
 
-	if drawing.status != 'draft':
+	if drawing.status != 'draft' and not isAdmin(request.user):
 		return json.dumps({'state': 'error', 'message': 'The drawing is not a draft, it cannot be modified anymore.'})
 
 	drawing.pathList = []
 
 	for p in pointLists:
 		drawing.pathList.append(json.dumps({ 'points': p['points'], 'data': p['data'] }))
-
+	
 	if bounds and not boundsHasNone(bounds):
 		drawing.box = makeBoxFromBounds(city, bounds)
 	else:
@@ -2291,6 +2291,7 @@ def updateDrawingBounds(request, pk, bounds, svg):
 @checkSimulateSlowResponse
 @checkDebug
 def updateDrawingSVG(request, pk, svg):
+	
 	if not isAdmin(request.user):
 		return json.dumps( { 'state': 'error', 'message': 'You must be administrator to update drawings.' } )
 	try:
@@ -2301,6 +2302,10 @@ def updateDrawingSVG(request, pk, svg):
 	drawing.svg = svg
 	drawing.save()
 
+	svgFile = open('CommeUnDessein/static/drawings/'+pk+'.svg', 'wb')
+	svgFile.write(svg)
+	svgFile.close()
+	
 	return json.dumps( {'state': 'success' } )
 
 # @dajaxice_register
@@ -2404,7 +2409,8 @@ def cancelDrawing(request, pk):
 			if len(draft.pathList) > 0:
 				return json.dumps({'state': 'error', 'message': "You must submit your draft before cancelling a drawing"})
 			elif draft.pk != drawing.pk:
-				draft.delete()
+				draft.status = 'modified'
+				draft.save()
 	except Drawing.DoesNotExist:
 		pass
 
