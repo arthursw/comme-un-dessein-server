@@ -2228,9 +2228,13 @@ def setPathsToDrawing(request, pointLists, bounds, pk=None, clientId=None):
 	if not userAllowed(request, drawing.owner):
 		return json.dumps({'state': 'error', 'message': 'Not owner of drawing'})
 
-	if drawing.status != 'draft' and not isAdmin(request.user):
-		return json.dumps({'state': 'error', 'message': 'The drawing is not a draft, it cannot be modified anymore.'})
-
+	if isAdmin(request.user):
+		if drawing.status == 'drawn' or drawing.status == 'validated':
+			return json.dumps({'state': 'error', 'message': 'You must set the drawing status to pending before modifying its svg'})
+	else:
+		if drawing.status != 'draft':
+			return json.dumps({'state': 'error', 'message': 'The drawing is not a draft, it cannot be modified anymore.'})
+	
 	drawing.pathList = []
 
 	for p in pointLists:
@@ -2294,10 +2298,14 @@ def updateDrawingSVG(request, pk, svg):
 	
 	if not isAdmin(request.user):
 		return json.dumps( { 'state': 'error', 'message': 'You must be administrator to update drawings.' } )
+
 	try:
 		drawing = Drawing.objects.get(pk=pk)
 	except Drawing.DoesNotExist:
 		return json.dumps({'state': 'error', 'message': 'Element does not exist'})
+
+	if drawing.status == 'drawn' or drawing.status == 'validated':
+		return json.dumps({'state': 'error', 'message': 'You must set the drawing status to pending before modifying its svg'})
 
 	drawing.svg = svg
 	drawing.save()
@@ -2305,7 +2313,7 @@ def updateDrawingSVG(request, pk, svg):
 	svgFile = open('CommeUnDessein/static/drawings/'+pk+'.svg', 'wb')
 	svgFile.write(svg)
 	svgFile.close()
-	
+
 	return json.dumps( {'state': 'success' } )
 
 # @dajaxice_register

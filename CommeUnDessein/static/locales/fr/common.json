@@ -411,5 +411,8 @@
     "Autotrace does not work with image URL": "Impossible de décalquer à partir d'une URL",
     "You cannot trace automatically an image from an URL": "Il n'est pas possible de décalquer une image à partir d'une URL pour des raisons de droit d'auteur. Veuillez vérifier que l'auteur autorise la réutilisation de l'image, puis la télécharger et la recharger à partir de votre ordinateur.",
     "Download image": "Télécharger l'image",
-    "Simplify path strenght": "Lissage des tracés"
+    "Simplify path strenght": "Lissage des tracés",
+    "Rotate": "Faire pivoter",
+    "Flip Vertical": "Miroir vertical",
+    "Flip Horizontal": "Miroir horizontal"
 }
