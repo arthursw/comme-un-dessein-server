@@ -14,7 +14,8 @@
     <base href="/">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-
+    <meta http-equiv="Cache-control" content="no-cache">
+    
     <!-- <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"> -->
     <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
 
@@ -50,7 +51,7 @@
 
     <link href="{% static 'libs/cropper/cropper.min.css' %}" rel="stylesheet">
     <link href="{% static 'css/biostar.css' %}" rel="stylesheet">
-    <link href="{% static 'css/styles.css' %}" rel="stylesheet">
+    <link href="{% static 'css/styles.css?v=1' %}" rel="stylesheet">
 
     <!-- Latest compiled and minified CSS -->
 
@@ -70,7 +71,7 @@
     <!-- <script>window.RXMLHttpRequest = XMLHttpRequest; // dajaxice modifies the XMLHttpRequest object and some of its default functionnalities do not work afterwards (no onload event sent), so we store the default version in RXMLHttpRequest</script> -->
     <!-- <script src="{% static 'libs/touch-emulator.js' %}"></script>
     <script> TouchEmulator(); </script> -->
-    <script src="{% static 'libs/zingtouch.min.js' %}"></script>
+    <!-- <script src="{% static 'libs/zingtouch.min.js' %}"></script> -->
 
     <meta property="fb:app_id"          content="263330707483013" /> 
     <meta property="og:type"            content="article" /> 
@@ -1368,18 +1369,18 @@
     {% if useDebugFiles %}
       <script data-main="{% static 'comme-un-dessein-client/js/App' %}" src="{% static 'libs/require.js' %}" async></script>
     {% else %}
-      <script src="{% static 'comme-un-dessein-client/js/App-built.js' %}" async></script>
+      <script src="{% static 'comme-un-dessein-client/js/App-built.js?v=1' %}" async></script>
     {% endif %}
 
   <!-- Global site tag (gtag.js) - Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-113242328-3"></script>
+  <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=UA-113242328-3"></script>
   <script>
    window.dataLayer = window.dataLayer || [];
    function gtag(){dataLayer.push(arguments);}
    gtag('js', new Date());
 
    gtag('config', 'UA-113242328-3');
-  </script>
+  </script> -->
 
   </body>
 </html>

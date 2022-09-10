@@ -2206,7 +2206,7 @@ def addPathsToDrawing(request, pointLists, bounds, pk=None, clientId=None):
 
 @checkSimulateSlowResponse
 @checkDebug
-def setPathsToDrawing(request, pointLists, bounds, pk=None, clientId=None):
+def setPathsToDrawing(request, pointLists, bounds, pk=None, clientId=None, svg=None):
 	
 	if not request.user.is_authenticated():
 		return json.dumps({'state': 'not_logged_in'})
@@ -2244,6 +2244,14 @@ def setPathsToDrawing(request, pointLists, bounds, pk=None, clientId=None):
 		drawing.box = makeBoxFromBounds(city, bounds)
 	else:
 		drawing.box = None
+
+	if svg:
+		drawing.svg = svg
+		drawing.save()
+
+		svgFile = open('CommeUnDessein/static/drawings/'+pk+'.svg', 'wb')
+		svgFile.write(svg)
+		svgFile.close()
 
 	drawing.save()
 
@@ -2377,6 +2385,32 @@ def deleteDiscussion(request, pk):
 
 	return json.dumps( { 'state': 'success', 'pk': pk } )
 
+def cloneDrawing(drawing):
+	suffix = str(datetime.datetime.now()).replace(" ", "_").replace(":", ".")
+	clone = Drawing(
+		clientId=drawing.clientId+'_'+suffix,
+		city=drawing.city,
+		planetX=drawing.planetX,
+		planetY=drawing.planetY,
+		box=drawing.box,
+		rType=drawing.rType,
+		owner=drawing.owner,
+		abuseReporter=drawing.abuseReporter,
+		status=drawing.status,
+		previousStatus=drawing.previousStatus,
+		svg=drawing.svg,
+		pathList=drawing.pathList,
+		date=drawing.date,
+		votes=drawing.votes,
+		comments=drawing.comments,
+		title=drawing.title+'_'+suffix,
+		description=drawing.description,
+		discussionId=drawing.discussionId
+	)
+	clone.status = 'cloned'
+	clone.save()
+	return clone
+
 @checkSimulateSlowResponse
 @checkDebug
 def cancelDrawing(request, pk):
@@ -2405,6 +2439,8 @@ def cancelDrawing(request, pk):
 	previousStatus = drawing.status
 	if drawing.status != 'flagged_pending' and drawing.status != 'flagged':
 		drawing.previousStatus = previousStatus
+	
+	cloneDrawing(drawing)
 
 	drawing.status = 'draft'
 	# send_mail('[Comme un dessein] cancelDrawing', u'cancelDrawing draft ' + str(drawing.pk), 'contact@commeundessein.co', ['idlv.contact@gmail.com'], fail_silently=True)
@@ -2429,13 +2465,13 @@ def cancelDrawing(request, pk):
 		vote.author.votes.remove(vote)
 		vote.author.save()
 		drawing.votes.remove(vote)
-		vote.delete()
+		# vote.delete()
 
 	for comment in drawing.comments[:]:
 		comment.author.comments.remove(comment)
 		comment.author.save()
 		drawing.comments.remove(comment)
-		comment.delete()
+		# comment.delete()
 
 	drawing.save()
 
