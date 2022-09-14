@@ -1748,7 +1748,7 @@ def reportAbuse(request, pk, itemType='drawing'):
 
 	wasFlaggedPending = item.status == 'flagged_pending'
 	
-	if userProfile.admin:
+	if userProfile.admin and item.status == 'flagged_pending':
 		item.status = 'flagged'
 		try:
 			drawingOwner = UserProfile.objects.get(username=item.owner)
