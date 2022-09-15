@@ -2386,7 +2386,7 @@ def deleteDiscussion(request, pk):
 	return json.dumps( { 'state': 'success', 'pk': pk } )
 
 def cloneDrawing(drawing):
-	suffix = str(drawing.pk)
+	suffix = str(datetime.datetime.now()).replace(" ", "_").replace(":", ".")
 	clone = Drawing(
 		clientId=drawing.clientId+'_'+suffix,
 		city=drawing.city,
@@ -2403,8 +2403,8 @@ def cloneDrawing(drawing):
 		date=drawing.date,
 		votes=drawing.votes,
 		comments=drawing.comments,
-		title=drawing.title+'_'+suffix,
-		description=drawing.description,
+		title=drawing.title,
+		description=drawing.description+'_'+str(drawing.pk),
 		discussionId=drawing.discussionId
 	)
 	clone.status = 'cloned'
