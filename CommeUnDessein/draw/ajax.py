@@ -2235,6 +2235,17 @@ def setPathsToDrawing(request, pointLists, bounds, pk=None, clientId=None, svg=N
 		if drawing.status != 'draft':
 			return json.dumps({'state': 'error', 'message': 'The drawing is not a draft, it cannot be modified anymore.'})
 	
+	# if drawing.description.endswith('cancelling'):
+	# 	sentPathList = []
+	# 	for p in pointLists:
+	# 		sentPathList.append(json.dumps({ 'points': p['points'], 'data': p['data'] }))
+	# 	if json.dumps(sentPathList) == json.dumps(drawing.pathList):
+	# 		drawing.description = drawing.description.replace('_cancelling', '')
+	# 		drawing.save()
+	# 		return json.dumps( {'state': 'success' } )
+	# 	else:
+	# 		return json.dumps( {'state': 'error', 'message': 'You are cancelling your drawing' } )
+	
 	drawing.pathList = []
 
 	for p in pointLists:
@@ -2443,6 +2454,7 @@ def cancelDrawing(request, pk):
 	cloneDrawing(drawing)
 
 	drawing.status = 'draft'
+	# drawing.description += '_cancelling'
 	# send_mail('[Comme un dessein] cancelDrawing', u'cancelDrawing draft ' + str(drawing.pk), 'contact@commeundessein.co', ['idlv.contact@gmail.com'], fail_silently=True)
 	drawing.svg = None
 	drawing.title = None
