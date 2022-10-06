@@ -217,7 +217,7 @@ def ajaxCall(request):
 def ajaxCallNoCSRF(request):
 	data = json.loads(request.POST.get('data'))
 	function = data["function"]
-	if function == "getNextValidatedDrawing" or function == "setDrawingStatusDrawn":
+	if function == "getNextValidatedDrawing" or function == "setDrawingStatusDrawn" or function == "loadDrawingsAndTilesFromBounds":
 		args = data["args"]
 		# print "ajaxCallNoCSRF"
 		# print function
