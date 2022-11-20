@@ -303,6 +303,8 @@
     "Load rejected drawings": "Charger les dessins rejetés",
     "Show rejected drawings": "Afficher les dessins rejetés",
     "Hide rejected drawings": "Masquer les dessins rejetés",
+    "Hide drawing": "Masquer le dessin",
+    "Show drawing": "Afficher le dessin",
     "Choose a tile": "Choisir une case",
     "Choose tile": "Choisir une case",
     "Do you want to paint this tile": "Souhaitez-vous vraiment peindre la case numero {{tileNumber}} ?",
